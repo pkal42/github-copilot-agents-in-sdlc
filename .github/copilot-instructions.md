@@ -16,6 +16,42 @@ This is a crowdfunding platform for games with a developer theme. The applicatio
 ### Global language guidance
 
 - Use type hints for function parameters and return values for all languages which support them
+- Add docstrings to all functions, classes, and modules using appropriate format for the language
+- Include file headers with brief descriptions for new files when appropriate
+
+### Python formatting and style standards
+
+- Follow PEP 8 style guide for Python code
+- Use 4 spaces for indentation (no tabs)
+- Maximum line length of 88 characters (Black formatter standard)
+- Use meaningful variable and function names in snake_case
+- Use CamelCase for class names
+- Use UPPER_CASE for constants
+- Import organization: standard library, third-party packages, local imports (separated by blank lines)
+- Use trailing commas in multi-line data structures
+
+### Python docstring standards
+
+- Use Google-style docstrings for all functions, classes, and modules
+- Include brief description, Args, Returns, and Raises sections as appropriate
+- Example format:
+  ```python
+  def function_name(param1: str, param2: int) -> bool:
+      """Brief description of what the function does.
+      
+      Args:
+          param1: Description of the first parameter.
+          param2: Description of the second parameter.
+          
+      Returns:
+          Description of the return value.
+          
+      Raises:
+          ValueError: Description of when this exception is raised.
+      """
+  ```
+- For classes, include a class-level docstring describing the purpose
+- For modules, include a module-level docstring at the top of the file
 
 ### Python and Flask Patterns
 
