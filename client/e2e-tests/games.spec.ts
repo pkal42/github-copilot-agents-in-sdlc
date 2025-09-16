@@ -131,4 +131,125 @@ test.describe('Game Listing and Navigation', () => {
     // We expect the page to not crash and still have a valid title
     await expect(page).toHaveTitle(/Game Details - Tailspin Toys/);
   });
+
+  test('should display filter controls and allow filtering by category', async ({ page }) => {
+    await page.goto('/');
+    
+    // Wait for the games to load
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+    
+    // Check that filter controls are present
+    await expect(page.locator('[data-testid="category-filter"]')).toBeVisible();
+    await expect(page.locator('[data-testid="publisher-filter"]')).toBeVisible();
+    
+    // Get initial number of games
+    const initialGameCount = await page.locator('[data-testid="game-card"]').count();
+    expect(initialGameCount).toBeGreaterThan(0);
+    
+    // Select a category filter
+    await page.selectOption('[data-testid="category-filter"]', { index: 1 }); // First category (not "All Categories")
+    
+    // Wait for filtered results
+    await page.waitForTimeout(1000);
+    
+    // Check that active filters indicator appears
+    await expect(page.locator('[data-testid="active-filters"]')).toBeVisible();
+    
+    // Check that the filtered results are different (potentially fewer games)
+    const filteredGameCount = await page.locator('[data-testid="game-card"]').count();
+    expect(filteredGameCount).toBeGreaterThanOrEqual(0);
+    expect(filteredGameCount).toBeLessThanOrEqual(initialGameCount);
+  });
+
+  test('should display filter controls and allow filtering by publisher', async ({ page }) => {
+    await page.goto('/');
+    
+    // Wait for the games to load
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+    
+    // Get initial number of games
+    const initialGameCount = await page.locator('[data-testid="game-card"]').count();
+    
+    // Select a publisher filter
+    await page.selectOption('[data-testid="publisher-filter"]', { index: 1 }); // First publisher (not "All Publishers")
+    
+    // Wait for filtered results
+    await page.waitForTimeout(1000);
+    
+    // Check that active filters indicator appears
+    await expect(page.locator('[data-testid="active-filters"]')).toBeVisible();
+    
+    // Check that the filtered results are different (potentially fewer games)
+    const filteredGameCount = await page.locator('[data-testid="game-card"]').count();
+    expect(filteredGameCount).toBeGreaterThanOrEqual(0);
+    expect(filteredGameCount).toBeLessThanOrEqual(initialGameCount);
+  });
+
+  test('should allow clearing filters and return to all games', async ({ page }) => {
+    await page.goto('/');
+    
+    // Wait for the games to load
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+    
+    // Get initial number of games
+    const initialGameCount = await page.locator('[data-testid="game-card"]').count();
+    
+    // Apply both filters
+    await page.selectOption('[data-testid="category-filter"]', { index: 1 });
+    await page.selectOption('[data-testid="publisher-filter"]', { index: 1 });
+    
+    // Wait for filtered results
+    await page.waitForTimeout(1000);
+    
+    // Check that active filters indicator appears
+    await expect(page.locator('[data-testid="active-filters"]')).toBeVisible();
+    
+    // Check that clear filters button appears
+    await expect(page.locator('[data-testid="clear-filters"]')).toBeVisible();
+    
+    // Click clear filters
+    await page.click('[data-testid="clear-filters"]');
+    
+    // Wait for results to update
+    await page.waitForTimeout(1000);
+    
+    // Check that active filters indicator is hidden
+    await expect(page.locator('[data-testid="active-filters"]')).not.toBeVisible();
+    
+    // Check that clear filters button is hidden
+    await expect(page.locator('[data-testid="clear-filters"]')).not.toBeVisible();
+    
+    // Check that we're back to showing all games
+    const finalGameCount = await page.locator('[data-testid="game-card"]').count();
+    expect(finalGameCount).toBe(initialGameCount);
+  });
+
+  test('should allow removing individual filter tags', async ({ page }) => {
+    await page.goto('/');
+    
+    // Wait for the games to load
+    await page.waitForSelector('[data-testid="games-grid"]', { timeout: 10000 });
+    
+    // Apply a category filter
+    await page.selectOption('[data-testid="category-filter"]', { index: 1 });
+    
+    // Wait for filtered results
+    await page.waitForTimeout(1000);
+    
+    // Check that active filters indicator appears
+    await expect(page.locator('[data-testid="active-filters"]')).toBeVisible();
+    
+    // Check that the category filter tag is visible
+    const categoryTag = page.locator('[data-testid="active-filters"] span').first();
+    await expect(categoryTag).toBeVisible();
+    
+    // Click the remove button on the category tag
+    await categoryTag.locator('button').click();
+    
+    // Wait for results to update
+    await page.waitForTimeout(1000);
+    
+    // Check that active filters indicator is hidden (since no filters are active)
+    await expect(page.locator('[data-testid="active-filters"]')).not.toBeVisible();
+  });
 });
