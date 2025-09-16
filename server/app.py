@@ -1,3 +1,8 @@
+"""Tailspin Toys Flask Application.
+
+This module contains the main Flask application for the Tailspin Toys
+crowdfunding platform. It initializes the database and registers blueprints.
+"""
 import os
 from flask import Flask
 from models import init_db
@@ -16,4 +21,4 @@ init_db(app)
 app.register_blueprint(games_bp)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5100) # Port 5100 to avoid macOS conflicts
+    app.run(debug=True, port=5100)  # Port 5100 to avoid macOS conflicts

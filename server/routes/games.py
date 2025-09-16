@@ -1,3 +1,4 @@
+"""Games API routes for the Tailspin Toys application."""
 from flask import jsonify, Response, Blueprint
 from models import db, Game, Publisher, Category
 from sqlalchemy.orm import Query
@@ -5,7 +6,13 @@ from sqlalchemy.orm import Query
 # Create a Blueprint for games routes
 games_bp = Blueprint('games', __name__)
 
+
 def get_games_base_query() -> Query:
+    """Get base query for games with joined publisher and category data.
+    
+    Returns:
+        SQLAlchemy Query object with Game, Publisher, and Category joined.
+    """
     return db.session.query(Game).join(
         Publisher, 
         Game.publisher_id == Publisher.id, 
@@ -18,6 +25,11 @@ def get_games_base_query() -> Query:
 
 @games_bp.route('/api/games', methods=['GET'])
 def get_games() -> Response:
+    """Get all games with publisher and category information.
+    
+    Returns:
+        JSON response containing list of all games.
+    """
     # Use the base query for all games
     games_query = get_games_base_query().all()
     
@@ -26,8 +38,17 @@ def get_games() -> Response:
     
     return jsonify(games_list)
 
+
 @games_bp.route('/api/games/<int:id>', methods=['GET'])
 def get_game(id: int) -> tuple[Response, int] | Response:
+    """Get a specific game by ID.
+    
+    Args:
+        id: The game ID to retrieve.
+        
+    Returns:
+        JSON response with game data or 404 error if not found.
+    """
     # Use the base query and add filter for specific game
     game_query = get_games_base_query().filter(Game.id == id).first()
     

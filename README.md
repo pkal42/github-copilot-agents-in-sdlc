@@ -16,6 +16,10 @@ A script file has been created to launch the site. You can run it by:
 
 Then navigate to the [website](http://localhost:4321) to see the site!
 
+## Contributing
+
+Please see our [contribution guidelines](./CONTRIBUTING.md) and [coding standards](./.github/copilot-instructions.md) before contributing to this project.
+
 ## License 
 
 This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) for the full terms.
